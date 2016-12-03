@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flex布局学习 - Powered by 洪建强</title>
+  <link rel="stylesheet" href="css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+  <div id="LearnFlex">
+  <header>...header...选择了</header>
+
+  <div id="wrap">
+    <div class="left">
+      <h2>修改 .box 容器属性</h2>
+
+      <ul>
+        <li v-for="attrs, key in boxCSS">
+          <h3>{{key}}:</h3>
+          <select v-on:change="selected" :name="key">
+            <option selected value="">请选择</option>
+            <option v-for="attr in attrs" :value="attr">{{attr}}</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+
+    <main style="justify-content: center; align-items: center;">
+      <div class="box" :style="boxSelectStyle">
+        <span class="item">1</span>
+      </div>
+    </main>
+
+    <div class="right">
+      <h2>修改 .item 项目属性</h2>
+    </div>
+  </div>
+
+  <footer>...footer...</footer>    
+  </div>
+
+  <script src="js/vue.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
