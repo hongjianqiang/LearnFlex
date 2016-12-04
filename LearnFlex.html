@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="LearnFlex">
-  <header>...header...选择了</header>
+  <header>...header...{{clearCounter()}}</header>
 
   <div id="wrap">
     <div class="left">
@@ -16,9 +16,10 @@
 
       <ul>
         <li v-for="attrs, key in boxCSS">
-          <h3>{{key}}:</h3>
-          <select @change="selectedBoxCSS" :name="key">
-            <option selected value="">请选择</option>
+          <h3>{{key}}：</h3>
+          <select @change="selectedBoxCSS" :name="key" :multiple="key == 'flex-flow'">
+            <option v-if="key != 'flex-flow'" selected value="">请选择</option>
+            <option v-if="key == 'flex-flow'">{{flexFlow}}</option>
             <option v-for="attr in attrs" :value="attr" :selected="boxSelectStyle[key] === attr">{{attr}}</option>
           </select>
         </li>
@@ -32,7 +33,9 @@
 
     <main style="justify-content: center; align-items: center;">
       <div class="box" :style="boxSelectStyle">
-        <span class="item" v-for="i in itemsArray.length" :style="itemsArray[i-1]">{{i}}</span>
+        <div class="column" v-for="arr, i in itemsArray">
+          <span class="item" v-for="o, j in itemsArray[i]" :style="o">{{counter()}}</span>
+        </div>
       </div>
     </main>
 
@@ -41,19 +44,29 @@
 
       <ul>
         <li>
-          <span>数量：</span><input type="number" min="0" @click="setItemsNum" :value="itemsArray.length">
+          <h3>.item 数量：</h3>
+          <input type="number" min="0" @click="setItemsNum" :value="itemsLength">
         </li>
 
         <li>
-          <h3>请选择指定的 .item</h3>
-          <select v-model="itemsChooseStatus" @change="changeItemsIndex">
+          <h3>.item 所在的 .column</h3>
+          <select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+          </select>
+        </li>
+
+        <li>
+          <h3>选择指定的 .item：</h3>
+          <select v-model="itemsChooseStatus">
             <option value="0">全选</option>
-            <option v-for="i in itemsArray.length" :value="i">{{i}}</option>
+            <option v-for="i in itemsLength" :value="i">{{i}}</option>
           </select>
         </li>
 
         <li v-for="attrs, key in itemCSS">
-          <h3>{{key}}:</h3>
+          <h3>{{key}}：</h3>
 
           <select v-if="typeof(itemCSS[key]) == 'object'" @change="selectedItemCSS" :name="key">
             <option selected value="">请选择</option>
@@ -81,7 +94,101 @@
     </div>
   </div>
 
-  <footer>...footer...</footer>
+  <footer>
+    <h2 style="text-align: center;">修改 .column 容器属性</h2>
+
+    <ul>
+      <li>
+        <h3>选择指定的.column：</h3>
+        <select name="align-content">
+          <option selected="selected" value="">请选择</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>display：</h3>
+        <select name="display">
+          <option selected="selected" value="">请选择</option>
+          <option>none</option>
+          <option>flex</option>
+          <option>inline-flex</option>
+          <option>-webkit-flex</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>flex-direction：</h3>
+        <select name="flex-direction">
+          <option selected="selected" value="">请选择</option>
+          <option>row</option>
+          <option>row-reverse</option>
+          <option>column</option>
+          <option>column-reverse</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>flex-wrap：</h3>
+        <select name="flex-wrap">
+          <option selected="selected" value="">请选择</option>
+          <option>nowrap</option>
+          <option>wrap</option>
+          <option>wrap-reverse</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>justify-content：</h3>
+        <select name="justify-content">
+          <option selected="selected" value="">请选择</option>
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>space-between</option>
+          <option>space-around</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>align-items：</h3>
+        <select name="align-items">
+          <option selected="selected" value="">请选择</option>
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>baseline</option>
+          <option>stretch</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>align-content：</h3>
+        <select name="align-content">
+          <option selected="selected" value="">请选择</option>
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>space-between</option>
+          <option>space-around</option>
+          <option>stretch</option>
+        </select>
+      </li>
+
+      <li>
+        <h3>flex-flow：</h3>
+        <select multiple>
+          <option>HelloWorld</option>
+        </select>
+      </li>
+    </ul>
+
+  </footer>
   </div>
 
   <script src="js/vue.js"></script>
