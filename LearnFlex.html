@@ -73,21 +73,21 @@
             <option
               v-for="attr in attrs"
               :value="attr"
-              :selected="(itemsChooseStatus>0)?(itemsArray[itemsChooseStatus-1][key] == attr):(false)">
+              :selected="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(false)">
               {{attr}}
             </option>
           </select>
 
           <input v-if="typeof(itemCSS[key]) == 'number'"
             @change="selectedItemCSS"
-            :value="(itemsChooseStatus>0)?(itemsArray[itemsChooseStatus-1][key]):(itemCSS[key])"
+            :value="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(itemCSS[key])"
             :name="key"
             :min="(key == 'flex-shrink')?0:''"
             type="number">
 
           <input v-if="typeof(itemCSS[key]) == 'string'"
             @change="selectedItemCSS"
-            :value="(itemsChooseStatus>0)?(itemsArray[itemsChooseStatus-1][key]):(itemCSS[key])"
+            :value="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(itemCSS[key])"
             :name="key">
         </li>
       </ul>

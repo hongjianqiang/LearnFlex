@@ -6,6 +6,8 @@
 'use strict';
 
 var COUNTER = 0;
+var ITEM_X  = 0;
+var ITEM_Y  = 0;
 
 var Data = {
   columnChooseStatus: 0,
@@ -145,21 +147,21 @@ var LearnFlex = new Vue({
       var sum = 0;
       var m = this.itemsArray.length;
 
-      for(var n = 0; n < m; n++) {
-        sum += this.itemsArray[n].length;
-        if (sum >= num) {
-          itemX = n;
-          break;
+      console.log('Called getItemPos()');
+
+      for (var i=0; i<m; i++) {
+        for(var j=0; j<this.itemsArray[i].length; j++){
+          sum++;
+          if (sum == num) {
+            itemX = i;
+            itemY = j;
+            break;
+          }
         }
       }
 
-      var i = this.itemsArray[itemX].length;
-
-      for(var n = 0; n < i; n++) {
-
-      }
-
-      return (itemX, itemY);
+      ITEM_X = itemX;
+      ITEM_Y = itemY;
     }
   },
   computed: {
@@ -179,6 +181,12 @@ var LearnFlex = new Vue({
         sum += this.itemsArray[n].length;
       }
       return sum;
+    },
+    itemX: function() {
+      return ITEM_X;
+    },
+    itemY: function() {
+      return ITEM_Y;
     }
   }
 });
