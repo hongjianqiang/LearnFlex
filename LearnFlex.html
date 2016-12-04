@@ -17,26 +17,58 @@
       <ul>
         <li v-for="attrs, key in boxCSS">
           <h3>{{key}}:</h3>
-          <select v-on:change="selected" :name="key">
+          <select @change="selectedBoxCSS" :name="key">
             <option selected value="">请选择</option>
-            <option v-for="attr in attrs" :value="attr">{{attr}}</option>
+            <option v-for="attr in attrs" :value="attr" :selected="boxSelectStyle[key] === attr">{{attr}}</option>
           </select>
+        </li>
+
+        <li>
+          <span>width:</span><input v-model="boxSelectStyle['width']">
+          <span>height:</span><input v-model="boxSelectStyle['height']">
         </li>
       </ul>
     </div>
 
     <main style="justify-content: center; align-items: center;">
       <div class="box" :style="boxSelectStyle">
-        <span class="item">1</span>
+        <span class="item" v-for="i in itemsArray.length" :style="itemsArray[i-1]">{{i}}</span>
       </div>
     </main>
 
     <div class="right">
       <h2>修改 .item 项目属性</h2>
+
+      <ul>
+        <li>
+          <span>数量：</span><input type="number" min="0" @click="setItemsNum" :value="itemsArray.length">
+        </li>
+
+        <li>
+          <h3>请选择指定的 .item</h3>
+          <select v-model="itemsChooseStatus" @change="changeItemsIndex">
+            <option value="0">全选</option>
+            <option v-for="i in itemsArray.length" :value="i">{{i}}</option>
+          </select>
+        </li>
+
+        <li v-for="attrs, key in itemCSS">
+          <h3>{{key}}:</h3>
+          <select @change="selectedItemCSS" :name="key">
+            <option selected value="">请选择</option>
+            <option
+              v-for="attr in attrs"
+              :value="attr"
+              :selected="(itemsChooseStatus>0)?(itemsArray[itemsChooseStatus-1][key] == attr):(false)">
+              {{attr}}
+            </option>
+          </select>
+        </li>
+      </ul>
     </div>
   </div>
 
-  <footer>...footer...</footer>    
+  <footer>...footer...</footer>
   </div>
 
   <script src="js/vue.js"></script>
