@@ -30,10 +30,10 @@ Data['boxSelectStyle'] = {
 }
 
 Data['itemCSS']= {
-  'order': [0],
-  'flex-grow': [0],
-  'flex-shrink': [1],
-  'flex-basis': ['auto'],
+  'order': 0,
+  'flex-grow': 0,
+  'flex-shrink': 1,
+  'flex-basis': 'auto',
   'align-self': ['auto', 'flex-start', 'flex-end', 'center', 'baseline', 'stretch']
 };
 
@@ -65,6 +65,13 @@ var LearnFlex = new Vue({
         for(; i < j; i++) {
           this.itemsArray[i][name] = value;
         }
+        if (typeof(this.itemCSS[name]) == 'number') {
+          this.itemCSS[name] = parseInt(value);
+        }
+        if (typeof(this.itemCSS[name]) == 'string') {
+          this.itemCSS[name] = value;
+        }
+
       } else {
         this.itemsArray[parseInt(itemsChooseStatus)-1][name] = value;
       }
