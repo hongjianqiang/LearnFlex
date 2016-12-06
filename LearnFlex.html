@@ -17,10 +17,9 @@
       <ul>
         <li v-for="attrs, key in boxAttrs">
           <h3>{{key}}：</h3>
-          <select :name="key" :multiple="key == 'flex-flow'" @change="bindBoxStyle">
-            <option v-if="key != 'flex-flow'" value="">请选择</option>
-            <option v-else>{{mergeBoxStyle}}</option>
-            <option v-for="attr in attrs" :value="attr" :selected="boxStyle[key] == attr">{{attr}}</option>
+          <select :name="key" v-model="boxStyle[key]">
+            <option v-if="key == 'flex-flow'" value="">{{mergeBoxStyle}}</option>
+            <option v-for="attr in attrs" :value="attr">{{attr}}</option>
           </select>
         </li>
 
@@ -117,10 +116,9 @@
 
       <li v-for="attrs, key in boxAttrs">
         <h3>{{key}}：</h3>
-        <select :name="key" :multiple="key == 'flex-flow'" @change="bindColumnStyle">
-          <option v-if="key != 'flex-flow'" value="">请选择</option>
-          <option v-else>{{mergeColumnStyle}}</option>
-          <option v-for="attr in attrs" :value="attr" :selected="columnStyle[key] == attr">{{attr}}</option>
+        <select :name="key" v-model="columnStyle[key]" @change="changeAllColumnStyle">
+          <option v-if="key == 'flex-flow'" value="">{{mergeColumnStyle}}</option>
+          <option v-for="attr in attrs" :value="attr">{{attr}}</option>
         </select>
       </li>
 

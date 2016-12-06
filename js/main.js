@@ -32,6 +32,7 @@ Data['boxStyle']   = {
   'display': 'flex',
   'flex-direction': 'row',
   'flex-wrap': 'nowrap',
+  'flex-flow': '',
   'justify-content': 'flex-start',
   'align-items': 'flex-start',
   'align-content': 'stretch',
@@ -43,6 +44,7 @@ Data['columnStyle']= {
   'display': 'flex',
   'flex-direction': 'row',
   'flex-wrap': 'nowrap',
+  'flex-flow': '',
   'justify-content': 'flex-start',
   'align-items': 'flex-start',
   'align-content': 'stretch'
@@ -61,6 +63,7 @@ Data['itemsObj'] = [
           'display': 'flex',
           'flex-direction': 'row',
           'flex-wrap': 'nowrap',
+          'flex-flow': '',
           'justify-content': 'flex-start',
           'align-items': 'flex-start',
           'align-content': 'stretch'
@@ -81,6 +84,7 @@ Data['itemsObj'] = [
           'display': 'flex',
           'flex-direction': 'row',
           'flex-wrap': 'nowrap',
+          'flex-flow': '',
           'justify-content': 'flex-start',
           'align-items': 'flex-start',
           'align-content': 'stretch'
@@ -97,6 +101,7 @@ Data['itemsObj'] = [
           'display': 'flex',
           'flex-direction': 'row',
           'flex-wrap': 'nowrap',
+          'flex-flow': '',
           'justify-content': 'flex-start',
           'align-items': 'flex-start',
           'align-content': 'stretch'
@@ -117,6 +122,13 @@ Data['itemsObj'] = [
 var LearnFlex = new Vue({
   el: '#LearnFlex',
   data: Data,
+  watch: {
+    chooseColumn: function(val, oldVal) {
+      if ('-1' != val) {
+        this.columnStyle = this.itemsObj[val]['columnStyle'];
+      }
+    }
+  },
   methods: {
     getItemTag: function(n) {
       /*
@@ -139,17 +151,14 @@ var LearnFlex = new Vue({
 
       return null;
     },
-    bindBoxStyle: function(e) {
-      var k = e.target.name;
-      var v = e.target.value;
+    changeAllColumnStyle: function(e) {
+      if('-1' == this.chooseColumn) {
+        var L = this.itemsObj.length;
 
-      this.boxStyle[k] = v;
-    },
-    bindColumnStyle: function(e) {
-      var k = e.target.name;
-      var v = e.target.value;
-
-      this.columnStyle[k] = v;
+        for (var i=0; i<L; i++) {
+          this.itemsObj[i]['columnStyle'] = this.columnStyle;
+        }
+      }
     }
   },
   computed:{
