@@ -11,7 +11,7 @@ var ITEM_Y  = 0;
 
 var Data = {
   columnChooseStatus: 0,
-  itemsChooseStatus: 0
+  itemsChooseStatus: '0'
 };
 
 Data['boxCSS'] = {
@@ -33,7 +33,34 @@ Data['boxSelectStyle'] = {
   'justify-content': 'space-between',
   'align-items': '',
   'align-content': ''
-}
+};
+
+Data['columnsArrayStyle'] = [
+  {
+    'display': 'flex',
+    'flex-direction': '',
+    'flex-wrap': '',
+    'justify-content': 'space-between',
+    'align-items': '',
+    'align-content': ''
+  },
+  {
+    'display': 'flex',
+    'flex-direction': '',
+    'flex-wrap': '',
+    'justify-content': 'space-between',
+    'align-items': '',
+    'align-content': ''
+  },
+  {
+    'display': 'flex',
+    'flex-direction': '',
+    'flex-wrap': '',
+    'justify-content': 'space-between',
+    'align-items': '',
+    'align-content': ''
+  }  
+];
 
 Data['itemCSS']= {
   'order': 0,
@@ -50,14 +77,16 @@ Data['itemsArray'] = [
       'flex-grow': 0,
       'flex-shrink': 1,
       'flex-basis': 'auto',
-      'align-self': 'auto'
+      'align-self': 'auto',
+      'No.': 'A'
     },
     {
       'order': 0,
       'flex-grow': 0,
       'flex-shrink': 1,
       'flex-basis': 'auto',
-      'align-self': 'auto'
+      'align-self': 'auto',
+      'No.': '2'
     }
   ],
   [
@@ -66,7 +95,8 @@ Data['itemsArray'] = [
       'flex-grow': 0,
       'flex-shrink': 1,
       'flex-basis': 'auto',
-      'align-self': 'auto'
+      'align-self': 'auto',
+      'No.': 'C'
     }
   ],
   [
@@ -75,14 +105,16 @@ Data['itemsArray'] = [
       'flex-grow': 0,
       'flex-shrink': 1,
       'flex-basis': 'auto',
-      'align-self': 'auto'
+      'align-self': 'auto',
+      'No.': '4'
     },
     {
       'order': 0,
       'flex-grow': 0,
       'flex-shrink': 1,
       'flex-basis': 'auto',
-      'align-self': 'auto'
+      'align-self': 'auto',
+      'No.': 'E'
     }
   ]
 ];
@@ -95,8 +127,8 @@ var LearnFlex = new Vue({
       return ++COUNTER;
     },
     clearCounter: function() {
-      console.log('Called clearCounter()');
       COUNTER = 0;
+      console.log('Called clearCounter().');
     },
     selectedBoxCSS: function(e) {
       Data['boxSelectStyle'][e.target.name] = e.target.value;
@@ -105,12 +137,13 @@ var LearnFlex = new Vue({
       var itemsChooseStatus = this.itemsChooseStatus;
       var name = e.target.name;
       var value = e.target.value;
-      var i = 0;
-      var j = this.itemsArray.length;
+      var m = this.itemsArray.length;
 
-      if(0 == itemsChooseStatus) {
-        for(; i < j; i++) {
-          this.itemsArray[i][name] = value;
+      if ('0' == itemsChooseStatus) {
+        for (var i=0; i<m; i++) {
+          for(var j=0; j<this.itemsArray[i].length; j++){
+            this.itemsArray[i][j][name] = value;
+          }
         }
         if (typeof(this.itemCSS[name]) == 'number') {
           this.itemCSS[name] = parseInt(value);
@@ -120,12 +153,65 @@ var LearnFlex = new Vue({
         }
 
       } else {
-        this.itemsArray[parseInt(itemsChooseStatus)-1][name] = value;
+        this.itemsArray[ITEM_X][ITEM_Y][name] = value;
+
       }
+
+    },
+    selectedItemColumn: function(e) {
+      var itemsChooseStatus = this.itemsChooseStatus;
+      var value = parseInt(e.target.value);
+      var m = this.itemsArray.length;
+
+      if ('0' == itemsChooseStatus) {
+        /*
+         * 如果 itemsChooseStatus 全选
+         * 先把所有 item 移动到指定的 column
+         */
+        for (var i=0; i<m; i++) {
+          for(var j=0; j<this.itemsArray[i].length; j++){
+            var tmp = this.itemsArray[i][j];
+
+            if (i != value-1) {
+              this.itemsArray[value-1].push(tmp);
+            }
+          }
+        }
+
+        /*
+         * 再把所有 item 从 column 删除
+         */
+        for (var i=0; i<m; i++) {
+          for(var j=0; j<this.itemsArray[i].length; j++){
+            var tmp = this.itemsArray[i][j];
+
+            if (i != value-1) {
+              this.itemsArray[i].splice(j);
+            }
+          }
+        }        
+
+      } else {
+        var tmp = this.itemsArray[ITEM_X][ITEM_Y];
+
+        this.itemsArray[value-1].push(tmp);
+        this.itemsArray[ITEM_X].splice(ITEM_Y, 1);
+
+      }
+
+    },
+    selectedItem: function(e) {
+      var i = e.target.selectedIndex;
+      console.log('Called selectedItem().');
+      this.getItemPos(i);
+      this.columnChooseStatus = ITEM_X;
     },
     setItemsNum: function(e) {
+      /*
+       * 修改 .item 数量
+       */
       var m = e.target.value;
-      var n = this.itemsArray.length;
+      var n = this.itemsLength;
 
       for (; m > n; n++) {
         this.itemsArray.push([{
@@ -133,12 +219,18 @@ var LearnFlex = new Vue({
           'flex-grow': 0,
           'flex-shrink': 1,
           'flex-basis': 'auto',
-          'align-self': 'auto'
+          'align-self': 'auto',
+          'No.': String(this.itemsLength + 1)
         }]);
       }
 
       for (; m < n; n--) {
-        this.itemsArray.pop();
+        this.getItemPos(this.itemsLength);
+        this.itemsArray[ITEM_X].pop();
+        if (!this.itemsArray[ITEM_X].length) {
+          this.itemsArray.pop();
+          this.columnsArrayStyle.pop();
+        }
       }
     },
     getItemPos: function(num) {
@@ -146,8 +238,6 @@ var LearnFlex = new Vue({
       var itemY = 0;
       var sum = 0;
       var m = this.itemsArray.length;
-
-      console.log('Called getItemPos()');
 
       for (var i=0; i<m; i++) {
         for(var j=0; j<this.itemsArray[i].length; j++){
@@ -162,6 +252,56 @@ var LearnFlex = new Vue({
 
       ITEM_X = itemX;
       ITEM_Y = itemY;
+
+    },
+    getItemPosFromNo: function(No) {
+      var itemX = 0;
+      var itemY = 0;
+      var sum = 0;
+      var m = this.itemsArray.length;
+
+      for (var i=0; i<m; i++) {
+        for(var j=0; j<this.itemsArray[i].length; j++){
+          sum++;
+          if (this.itemsArray[i][j]['No.'] == No) {
+            itemX = i;
+            itemY = j;
+            break;
+          }
+        }
+      }
+
+      ITEM_X = itemX;
+      ITEM_Y = itemY;
+    },
+    getItemNo: function(num) {
+      var sum = 0;
+      var m = this.itemsArray.length;
+
+      for (var i=0; i<m; i++) {
+        for(var j=0; j<this.itemsArray[i].length; j++){
+          sum++;
+          if (sum == num) {
+            return this.itemsArray[i][j]['No.'];
+          }
+        }
+      }
+
+    },
+    itemX: function() {
+      return ITEM_X;
+
+    },
+    itemY: function() {
+      return ITEM_Y;
+
+    },
+    selectedColumn: function(e){
+      this.columnChooseStatus = parseInt(e.target.value);
+
+    },
+    selectedColumnCSS: function(e) {
+
     }
   },
   computed: {
@@ -181,12 +321,6 @@ var LearnFlex = new Vue({
         sum += this.itemsArray[n].length;
       }
       return sum;
-    },
-    itemX: function() {
-      return ITEM_X;
-    },
-    itemY: function() {
-      return ITEM_Y;
     }
   }
 });

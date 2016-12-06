@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="LearnFlex">
-  <header>...header...{{clearCounter()}}</header>
+  <header>...header... {{getItemPosFromNo(itemsChooseStatus)}}</header>
 
   <div id="wrap">
     <div class="left">
@@ -25,8 +25,12 @@
         </li>
 
         <li>
-          <span>width:</span><input v-model="boxSelectStyle['width']">
-          <span>height:</span><input v-model="boxSelectStyle['height']">
+          <p>
+            <span style="margin-right:8px;">width:</span><input v-model="boxSelectStyle['width']">
+          </p>
+          <p>
+            <span>height:</span><input v-model="boxSelectStyle['height']">
+          </p>
         </li>
       </ul>
     </div>
@@ -34,7 +38,7 @@
     <main style="justify-content: center; align-items: center;">
       <div class="box" :style="boxSelectStyle">
         <div class="column" v-for="arr, i in itemsArray">
-          <span class="item" v-for="o, j in itemsArray[i]" :style="o">{{counter()}}</span>
+          <span class="item" v-for="o, j in itemsArray[i]" :style="o">{{itemsArray[i][j]['No.']}}</span>
         </div>
       </div>
     </main>
@@ -50,18 +54,23 @@
 
         <li>
           <h3>.item 所在的 .column</h3>
-          <select>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
+          <select @change="selectedItemColumn">
+            <option selected value="">请选择</option>
+            <option 
+              v-for="item, i in itemsArray"
+              :value="i+1"
+              :selected="(itemsChooseStatus!='0')?(itemX() == i):(false)"
+              >
+              {{i+1}}
+            </option>
           </select>
         </li>
 
         <li>
           <h3>选择指定的 .item：</h3>
-          <select v-model="itemsChooseStatus">
+          <select v-model="itemsChooseStatus" @change="selectedItem">
             <option value="0">全选</option>
-            <option v-for="i in itemsLength" :value="i">{{i}}</option>
+            <option v-for="i in itemsLength" :value="getItemNo(i)">{{getItemNo(i)}}</option>
           </select>
         </li>
 
@@ -73,21 +82,21 @@
             <option
               v-for="attr in attrs"
               :value="attr"
-              :selected="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(false)">
+              :selected="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key] == attr):(false)">
               {{attr}}
             </option>
           </select>
 
           <input v-if="typeof(itemCSS[key]) == 'number'"
             @change="selectedItemCSS"
-            :value="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(itemCSS[key])"
+            :value="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key]):(itemCSS[key])"
             :name="key"
             :min="(key == 'flex-shrink')?0:''"
             type="number">
 
           <input v-if="typeof(itemCSS[key]) == 'string'"
             @change="selectedItemCSS"
-            :value="(itemsChooseStatus>0)?(getItemPos(itemsChooseStatus-1) || itemsArray[itemX][itemY][key] == attr):(itemCSS[key])"
+            :value="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key]):(itemCSS[key])"
             :name="key">
         </li>
       </ul>
@@ -100,92 +109,27 @@
     <ul>
       <li>
         <h3>选择指定的.column：</h3>
-        <select name="align-content">
-          <option selected="selected" value="">请选择</option>
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
+        <select @change="selectedColumn">
+          <option selected value="">请选择</option>
+          <option 
+            v-for="item, i in itemsArray"
+            :value="i"
+            :selected="(itemsChooseStatus!='0')?(itemX() == i):(false)"
+            >
+            {{i+1}}
+          </option>
         </select>
       </li>
 
-      <li>
-        <h3>display：</h3>
-        <select name="display">
-          <option selected="selected" value="">请选择</option>
-          <option>none</option>
-          <option>flex</option>
-          <option>inline-flex</option>
-          <option>-webkit-flex</option>
+      <li v-for="attrs, key in boxCSS">
+        <h3>{{key}}：</h3>
+        <select @change="selectedColumnCSS" :name="key" :multiple="key == 'flex-flow'">
+          <option v-if="key != 'flex-flow'" selected value="">请选择</option>
+          <option v-if="key == 'flex-flow'">{{flexFlow}}</option>
+          <option v-for="attr in attrs" :value="attr" :selected="boxSelectStyle[key] === attr">{{attr}}</option>
         </select>
       </li>
 
-      <li>
-        <h3>flex-direction：</h3>
-        <select name="flex-direction">
-          <option selected="selected" value="">请选择</option>
-          <option>row</option>
-          <option>row-reverse</option>
-          <option>column</option>
-          <option>column-reverse</option>
-        </select>
-      </li>
-
-      <li>
-        <h3>flex-wrap：</h3>
-        <select name="flex-wrap">
-          <option selected="selected" value="">请选择</option>
-          <option>nowrap</option>
-          <option>wrap</option>
-          <option>wrap-reverse</option>
-        </select>
-      </li>
-
-      <li>
-        <h3>justify-content：</h3>
-        <select name="justify-content">
-          <option selected="selected" value="">请选择</option>
-          <option>flex-start</option>
-          <option>flex-end</option>
-          <option>center</option>
-          <option>space-between</option>
-          <option>space-around</option>
-        </select>
-      </li>
-
-      <li>
-        <h3>align-items：</h3>
-        <select name="align-items">
-          <option selected="selected" value="">请选择</option>
-          <option>flex-start</option>
-          <option>flex-end</option>
-          <option>center</option>
-          <option>baseline</option>
-          <option>stretch</option>
-        </select>
-      </li>
-
-      <li>
-        <h3>align-content：</h3>
-        <select name="align-content">
-          <option selected="selected" value="">请选择</option>
-          <option>flex-start</option>
-          <option>flex-end</option>
-          <option>center</option>
-          <option>space-between</option>
-          <option>space-around</option>
-          <option>stretch</option>
-        </select>
-      </li>
-
-      <li>
-        <h3>flex-flow：</h3>
-        <select multiple>
-          <option>HelloWorld</option>
-        </select>
-      </li>
     </ul>
 
   </footer>
