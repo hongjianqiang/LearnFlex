@@ -6,6 +6,7 @@
 'use strict';
 
 var Data = {
+  chooseColumn: -1
 };
 
 Data['boxAttrs'] = {
@@ -29,7 +30,8 @@ Data['itemAttrs']= {
 
 Data['boxStyle']   = {
   'display': 'flex',
-  'flex-flow': 'row nowrap',
+  'flex-direction': 'row',
+  'flex-wrap': 'nowrap',
   'justify-content': 'flex-start',
   'align-items': 'flex-start',
   'align-content': 'stretch',
@@ -38,11 +40,12 @@ Data['boxStyle']   = {
 };
 
 Data['columnStyle']= {
-  'display': 'none',
-  'flex-flow': 'row nowrap',
+  'display': 'flex',
+  'flex-direction': 'row',
+  'flex-wrap': 'nowrap',
   'justify-content': 'flex-start',
   'align-items': 'flex-start',
-  'align-content': 'stretch'  
+  'align-content': 'stretch'
 };
 
 Data['itemStyle'] = {
@@ -52,33 +55,63 @@ Data['itemStyle'] = {
 };
 
 
-Data['itemsArr'] = [
-  [
-    {
-      'tag': 'A1',
-      'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+Data['itemsObj'] = [
+  {
+    'columnStyle': {
+          'display': 'flex',
+          'flex-direction': 'row',
+          'flex-wrap': 'nowrap',
+          'justify-content': 'flex-start',
+          'align-items': 'flex-start',
+          'align-content': 'stretch'
     },
-    {
-      'tag': 'A2',
-      'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}      
-    }
-  ],
-  [
-    {
-      'tag': 'A3',
-      'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}            
-    }
-  ],
-  [
-    {
-      'tag': 'A4',
-      'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}   
+    'items': [
+      {
+        'tag': 'A1',
+        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+      },
+      {
+        'tag': 'A2',
+        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+      }
+    ]
+  },
+  {
+    'columnStyle': {
+          'display': 'flex',
+          'flex-direction': 'row',
+          'flex-wrap': 'nowrap',
+          'justify-content': 'flex-start',
+          'align-items': 'flex-start',
+          'align-content': 'stretch'
     },
-    {
-      'tag': 'A5',
-      'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}         
-    }
-  ],
+    'items': [
+      {
+        'tag': 'A3',
+        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+      }
+    ]
+  },
+  {
+    'columnStyle': {
+          'display': 'flex',
+          'flex-direction': 'row',
+          'flex-wrap': 'nowrap',
+          'justify-content': 'flex-start',
+          'align-items': 'flex-start',
+          'align-content': 'stretch'
+    },
+    'items': [
+      {
+        'tag': 'A4',
+        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+      },
+      {
+        'tag': 'A5',
+        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+      }
+    ]
+  },
 ];
 
 var LearnFlex = new Vue({
@@ -91,12 +124,12 @@ var LearnFlex = new Vue({
        * @return {String} 返回.item的tag
        */
       var sum = 0;
-      var L = this.itemsArr.length;
+      var L = this.itemsObj.length;
 
       for (var i=0; i<L; i++) {
-        for(var j=0; j<this.itemsArr[i].length; j++){
+        for(var j=0; j<this.itemsObj[i]['items'].length; j++){
           if(n == sum){
-            return this.itemsArr[i][j]['tag'];
+            return this.itemsObj[i]['items'][j]['tag'];
             break;
           }
           if(sum>n) { break; }
@@ -105,20 +138,50 @@ var LearnFlex = new Vue({
       }
 
       return null;
+    },
+    bindBoxStyle: function(e) {
+      var k = e.target.name;
+      var v = e.target.value;
+
+      this.boxStyle[k] = v;
+    },
+    bindColumnStyle: function(e) {
+      var k = e.target.name;
+      var v = e.target.value;
+
+      this.columnStyle[k] = v;
     }
   },
   computed:{
-    itemsArrLen: function() {
+    itemsObjLen: function() {
       /*
-       * @return {Number} 返回 itemsArr 数组长度
+       * @return {Number} 返回 itemsObj 里所有 items 数组长度
        */
       var sum = 0;
-      var L = this.itemsArr.length;
+      var L = this.itemsObj.length;
 
       for(var i=0; i<L; i++) {
-        sum += this.itemsArr[i].length;
+        sum += this.itemsObj[i]['items'].length;
       }
       return sum;
+    },
+    mergeBoxStyle: function() {
+      var flexFlow = this.boxStyle['flex-direction'] + ' ' + this.boxStyle['flex-wrap'];
+
+      if(' ' == flexFlow) {
+        return '合并 flex-direction, flex-wrap';
+      } else {
+        return flexFlow;
+      }
+    },
+    mergeColumnStyle: function() {
+      var flexFlow = this.columnStyle['flex-direction'] + ' ' + this.columnStyle['flex-wrap'];
+
+      if(' ' == flexFlow) {
+        return '合并 flex-direction, flex-wrap';
+      } else {
+        return flexFlow;
+      }
     }
   }
 });

@@ -17,10 +17,10 @@
       <ul>
         <li v-for="attrs, key in boxAttrs">
           <h3>{{key}}：</h3>
-          <select :name="key" :multiple="key == 'flex-flow'">
-            <option v-if="key != 'flex-flow'" selected value="">请选择</option>
-            <option v-else>{{boxStyle['flex-flow']}}</option>
-            <option v-for="attr in attrs" :value="attr" :selected="boxStyle[key] === attr">{{attr}}</option>
+          <select :name="key" :multiple="key == 'flex-flow'" @change="bindBoxStyle">
+            <option v-if="key != 'flex-flow'" value="">请选择</option>
+            <option v-else>{{mergeBoxStyle}}</option>
+            <option v-for="attr in attrs" :value="attr" :selected="boxStyle[key] == attr">{{attr}}</option>
           </select>
         </li>
 
@@ -37,8 +37,8 @@
 
     <main style="justify-content: center; align-items: center;">
       <div class="box" :style="boxStyle">
-        <div class="column" v-for="arr, i in itemsArr">
-          <span class="item" v-for="o, j in itemsArr[i]" :style="o['style']">{{o['tag']}}</span>
+        <div class="column" v-for="arr, i in itemsObj" :style="arr['columnStyle']">
+          <span class="item" v-for="o, j in itemsObj[i]['items']" :style="o['style']">{{o['tag']}}</span>
         </div>
       </div>
     </main>
@@ -49,14 +49,14 @@
       <ul>
         <li>
           <h3>.item 数量：</h3>
-          <input type="number" min="0" :value="itemsArrLen">
+          <input type="number" min="0" :value="itemsObjLen">
         </li>
 
         <li>
           <h3>选择指定的 .item：</h3>
           <select>
             <option value="-1">全选</option>
-            <option v-for="i in itemsArrLen" :value="getItemTag(i)">{{getItemTag(i)}}</option>
+            <option v-for="i in itemsObjLen" :value="getItemTag(i)">{{getItemTag(i)}}</option>
           </select>
         </li>
 
@@ -86,8 +86,8 @@
           <h3>.item 所在的 .column</h3>
           <select>
             <option selected>请选择</option>
-            <option 
-              v-for="i in itemsArr.length"
+            <option
+              v-for="i in itemsObj.length"
               :value="i"
               >
               {{i+1}}
@@ -104,23 +104,23 @@
     <ul>
       <li>
         <h3>选择指定的.column：</h3>
-        <select>
-          <option selected value="-1">全选</option>
-          <option 
-              v-for="i in itemsArr.length"
-              :value="i"
+        <select v-model="chooseColumn">
+          <option value="-1">全选</option>
+          <option
+              v-for="i in itemsObj.length"
+              :value="i-1"
               >
-              {{i+1}}
+              {{i}}
           </option>
         </select>
       </li>
 
       <li v-for="attrs, key in boxAttrs">
         <h3>{{key}}：</h3>
-        <select :name="key" :multiple="key == 'flex-flow'">
-          <option v-if="key != 'flex-flow'" selected value="">请选择</option>
-          <option v-else>{{boxStyle['flex-flow']}}</option>
-          <option v-for="attr in attrs" :value="attr">{{attr}}</option>
+        <select :name="key" :multiple="key == 'flex-flow'" @change="bindColumnStyle">
+          <option v-if="key != 'flex-flow'" value="">请选择</option>
+          <option v-else>{{mergeColumnStyle}}</option>
+          <option v-for="attr in attrs" :value="attr" :selected="columnStyle[key] == attr">{{attr}}</option>
         </select>
       </li>
 
