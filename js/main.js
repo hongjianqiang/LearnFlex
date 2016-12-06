@@ -6,6 +6,7 @@
 'use strict';
 
 var Data = {
+  itemsNum: 0,
   chooseColumn: -1
 };
 
@@ -122,11 +123,17 @@ Data['itemsObj'] = [
 var LearnFlex = new Vue({
   el: '#LearnFlex',
   data: Data,
+  mounted: function() {
+    //this.itemsNum = this.itemsObjLen;
+  },
   watch: {
     chooseColumn: function(val, oldVal) {
       if ('-1' != val) {
         this.columnStyle = this.itemsObj[val]['columnStyle'];
       }
+    },
+    itemsNum: function(val, oldVal) {
+      console.log(val, oldVal);
     }
   },
   methods: {
