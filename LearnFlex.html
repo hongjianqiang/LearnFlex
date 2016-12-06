@@ -8,37 +8,37 @@
 </head>
 <body>
   <div id="LearnFlex">
-  <header>...header... {{getItemPosFromNo(itemsChooseStatus)}}</header>
+  <header>...header...</header>
 
   <div id="wrap">
     <div class="left">
       <h2>修改 .box 容器属性</h2>
 
       <ul>
-        <li v-for="attrs, key in boxCSS">
+        <li v-for="attrs, key in boxAttrs">
           <h3>{{key}}：</h3>
-          <select @change="selectedBoxCSS" :name="key" :multiple="key == 'flex-flow'">
+          <select :name="key" :multiple="key == 'flex-flow'">
             <option v-if="key != 'flex-flow'" selected value="">请选择</option>
-            <option v-if="key == 'flex-flow'">{{flexFlow}}</option>
-            <option v-for="attr in attrs" :value="attr" :selected="boxSelectStyle[key] === attr">{{attr}}</option>
+            <option v-else>{{boxStyle['flex-flow']}}</option>
+            <option v-for="attr in attrs" :value="attr" :selected="boxStyle[key] === attr">{{attr}}</option>
           </select>
         </li>
 
         <li>
           <p>
-            <span style="margin-right:8px;">width:</span><input v-model="boxSelectStyle['width']">
+            <span style="margin-right:8px;">width:</span><input v-model="boxStyle['width']">
           </p>
           <p>
-            <span>height:</span><input v-model="boxSelectStyle['height']">
+            <span>height:</span><input v-model="boxStyle['height']">
           </p>
         </li>
       </ul>
     </div>
 
     <main style="justify-content: center; align-items: center;">
-      <div class="box" :style="boxSelectStyle">
-        <div class="column" v-for="arr, i in itemsArray">
-          <span class="item" v-for="o, j in itemsArray[i]" :style="o">{{itemsArray[i][j]['No.']}}</span>
+      <div class="box" :style="boxStyle">
+        <div class="column" v-for="arr, i in itemsArr">
+          <span class="item" v-for="o, j in itemsArr[i]" :style="o['style']">{{o['tag']}}</span>
         </div>
       </div>
     </main>
@@ -49,55 +49,50 @@
       <ul>
         <li>
           <h3>.item 数量：</h3>
-          <input type="number" min="0" @click="setItemsNum" :value="itemsLength">
-        </li>
-
-        <li>
-          <h3>.item 所在的 .column</h3>
-          <select @change="selectedItemColumn">
-            <option selected value="">请选择</option>
-            <option 
-              v-for="item, i in itemsArray"
-              :value="i+1"
-              :selected="(itemsChooseStatus!='0')?(itemX() == i):(false)"
-              >
-              {{i+1}}
-            </option>
-          </select>
+          <input type="number" min="0" :value="itemsArrLen">
         </li>
 
         <li>
           <h3>选择指定的 .item：</h3>
-          <select v-model="itemsChooseStatus" @change="selectedItem">
-            <option value="0">全选</option>
-            <option v-for="i in itemsLength" :value="getItemNo(i)">{{getItemNo(i)}}</option>
+          <select>
+            <option value="-1">全选</option>
+            <option v-for="i in itemsArrLen" :value="getItemTag(i)">{{getItemTag(i)}}</option>
           </select>
         </li>
 
-        <li v-for="attrs, key in itemCSS">
+        <li v-for="attrs, key in itemAttrs">
           <h3>{{key}}：</h3>
 
-          <select v-if="typeof(itemCSS[key]) == 'object'" @change="selectedItemCSS" :name="key">
+          <select v-if="typeof(itemAttrs[key]) == 'object'" :name="key">
             <option selected value="">请选择</option>
             <option
               v-for="attr in attrs"
               :value="attr"
-              :selected="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key] == attr):(false)">
+              >
               {{attr}}
             </option>
           </select>
 
-          <input v-if="typeof(itemCSS[key]) == 'number'"
-            @change="selectedItemCSS"
-            :value="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key]):(itemCSS[key])"
+          <input v-if="typeof(itemAttrs[key]) == 'number'"
             :name="key"
             :min="(key == 'flex-shrink')?0:''"
             type="number">
 
-          <input v-if="typeof(itemCSS[key]) == 'string'"
-            @change="selectedItemCSS"
-            :value="(itemsChooseStatus!='0')?(itemsArray[itemX()][itemY()][key]):(itemCSS[key])"
+          <input v-if="typeof(itemAttrs[key]) == 'string'"
             :name="key">
+        </li>
+
+        <li>
+          <h3>.item 所在的 .column</h3>
+          <select>
+            <option selected>请选择</option>
+            <option 
+              v-for="i in itemsArr.length"
+              :value="i"
+              >
+              {{i+1}}
+            </option>
+          </select>
         </li>
       </ul>
     </div>
@@ -109,24 +104,23 @@
     <ul>
       <li>
         <h3>选择指定的.column：</h3>
-        <select @change="selectedColumn">
-          <option selected value="">请选择</option>
+        <select>
+          <option selected value="-1">全选</option>
           <option 
-            v-for="item, i in itemsArray"
-            :value="i"
-            :selected="(itemsChooseStatus!='0')?(itemX() == i):(false)"
-            >
-            {{i+1}}
+              v-for="i in itemsArr.length"
+              :value="i"
+              >
+              {{i+1}}
           </option>
         </select>
       </li>
 
-      <li v-for="attrs, key in boxCSS">
+      <li v-for="attrs, key in boxAttrs">
         <h3>{{key}}：</h3>
-        <select @change="selectedColumnCSS" :name="key" :multiple="key == 'flex-flow'">
+        <select :name="key" :multiple="key == 'flex-flow'">
           <option v-if="key != 'flex-flow'" selected value="">请选择</option>
-          <option v-if="key == 'flex-flow'">{{flexFlow}}</option>
-          <option v-for="attr in attrs" :value="attr" :selected="boxSelectStyle[key] === attr">{{attr}}</option>
+          <option v-else>{{boxStyle['flex-flow']}}</option>
+          <option v-for="attr in attrs" :value="attr">{{attr}}</option>
         </select>
       </li>
 
