@@ -53,17 +53,16 @@
 
         <li>
           <h3>选择指定的 .item：</h3>
-          <select>
+          <select v-model="chooseItem">
             <option value="-1">全选</option>
-            <option v-for="i in itemsObjLen" :value="getItemTag(i)">{{getItemTag(i)}}</option>
+            <option v-for="i in itemsObjLen" :value="getItemTag(i-1)">{{getItemTag(i-1)}}</option>
           </select>
         </li>
 
         <li v-for="attrs, key in itemAttrs">
           <h3>{{key}}：</h3>
 
-          <select v-if="typeof(itemAttrs[key]) == 'object'" :name="key">
-            <option selected value="">请选择</option>
+          <select v-if="typeof(itemAttrs[key]) == 'object'" :name="key" v-model="itemStyle[key]">
             <option
               v-for="attr in attrs"
               :value="attr"
@@ -73,11 +72,17 @@
           </select>
 
           <input v-if="typeof(itemAttrs[key]) == 'number'"
+            v-model="itemStyle[key]"
             :name="key"
             :min="(key == 'flex-shrink')?0:''"
             type="number">
 
-          <input v-if="typeof(itemAttrs[key]) == 'string'"
+          <input v-if="typeof(itemAttrs[key]) == 'string' && key !='flex'"
+            v-model="itemStyle[key]"
+            :name="key">
+
+          <input v-if="typeof(itemAttrs[key]) == 'string' && key =='flex'"
+            :value="mergeItemStyle"
             :name="key">
         </li>
 

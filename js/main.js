@@ -6,8 +6,9 @@
 'use strict';
 
 var Data = {
-  itemsNum: 0,
-  chooseColumn: -1
+  itemsNum: 5,
+  chooseColumn: -1,
+  chooseItem: -1
 };
 
 Data['boxAttrs'] = {
@@ -53,7 +54,10 @@ Data['columnStyle']= {
 
 Data['itemStyle'] = {
   'order': 0,
-  'flex': '0 1 auto',
+  'flex-grow': 0,
+  'flex-shrink': 1,
+  'flex-basis': 'auto',
+  'flex': '',
   'align-self': 'auto'
 };
 
@@ -72,11 +76,11 @@ Data['itemsObj'] = [
     'items': [
       {
         'tag': 'A1',
-        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       },
       {
         'tag': 'A2',
-        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
   },
@@ -93,7 +97,7 @@ Data['itemsObj'] = [
     'items': [
       {
         'tag': 'A3',
-        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
   },
@@ -110,11 +114,11 @@ Data['itemsObj'] = [
     'items': [
       {
         'tag': 'A4',
-        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       },
       {
         'tag': 'A5',
-        'style': {'order': 0, 'flex': '0 1 auto', 'align-self': 'auto'}
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
   },
@@ -132,8 +136,20 @@ var LearnFlex = new Vue({
         this.columnStyle = this.itemsObj[val]['columnStyle'];
       }
     },
+    chooseItem: function(val, oldVal) {
+      if ('-1' != val) {
+        var pos = this.getItemXYFromTag(val);
+        this.itemStyle = this.itemsObj[pos.X]['items'][pos.Y]['style'];
+        //this.itemStyle = this.itemsObj[val]['style'];
+      }
+    },
     itemsNum: function(val, oldVal) {
-      console.log(val, oldVal);
+      if(val > oldVal) {
+        console.log('Add.');
+      }
+      if(val < oldVal) {
+        console.log('Sub.');
+      }
     }
   },
   methods: {
@@ -145,7 +161,7 @@ var LearnFlex = new Vue({
       var sum = 0;
       var L = this.itemsObj.length;
 
-      for (var i=0; i<L; i++) {
+      for(var i=0; i<L; i++) {
         for(var j=0; j<this.itemsObj[i]['items'].length; j++){
           if(n == sum){
             return this.itemsObj[i]['items'][j]['tag'];
@@ -153,6 +169,26 @@ var LearnFlex = new Vue({
           }
           if(sum>n) { break; }
           sum++;
+        }
+      }
+
+      return null;
+    },
+    getItemXYFromTag: function(tag) {
+      /*
+       * @param {Number} tag 给出.item的tag
+       * @return {Object} 返回.item的位置
+       */
+      var L = this.itemsObj.length;
+      var pos = {};
+
+      for(var i=0; i<L; i++) {
+        for(var j=0; j<this.itemsObj[i]['items'].length; j++) {
+          if(this.itemsObj[i]['items'][j]['tag'] == tag){
+            pos.X = i;
+            pos.Y = j;
+            return pos;
+          }
         }
       }
 
@@ -197,6 +233,15 @@ var LearnFlex = new Vue({
         return '合并 flex-direction, flex-wrap';
       } else {
         return flexFlow;
+      }
+    },
+    mergeItemStyle: function() {
+      var flex = this.itemStyle['flex-grow'] + ' ' + this.itemStyle['flex-shrink'] + ' ' + this.itemStyle['flex-basis'];
+
+      if ('  ' == flex) {
+        return '合并 flex-direction, flex-wrap';
+      } else {
+        return flex;
       }
     }
   }
