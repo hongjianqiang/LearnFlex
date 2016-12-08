@@ -139,16 +139,44 @@ var LearnFlex = new Vue({
     chooseItem: function(val, oldVal) {
       if ('-1' != val) {
         var pos = this.getItemXYFromTag(val);
+
         this.itemStyle = this.itemsObj[pos.X]['items'][pos.Y]['style'];
-        //this.itemStyle = this.itemsObj[val]['style'];
+        this.chooseColumn = pos.X;
       }
     },
     itemsNum: function(val, oldVal) {
       if(val > oldVal) {
         console.log('Add.');
+        this.itemsObj.push(
+          {
+            'columnStyle': {
+                  'display': 'flex',
+                  'flex-direction': 'row',
+                  'flex-wrap': 'nowrap',
+                  'flex-flow': '',
+                  'justify-content': 'flex-start',
+                  'align-items': 'flex-start',
+                  'align-content': 'stretch'
+            },
+            'items': [
+              {
+                'tag': val,
+                'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
+              }
+            ]
+          }
+        );
       }
+
       if(val < oldVal) {
         console.log('Sub.');
+        var L = this.itemsObj.length;
+      
+        this.itemsObj[L-1]['items'].pop();
+        console.log(this.itemsObj[L-1]['items'].length);
+        if (!this.itemsObj[L-1]['items'].length) {
+          this.itemsObj.pop();
+        }
       }
     }
   },
@@ -201,6 +229,38 @@ var LearnFlex = new Vue({
         for (var i=0; i<L; i++) {
           this.itemsObj[i]['columnStyle'] = this.columnStyle;
         }
+      }
+    },
+    changeItemColumn: function(e) {
+      /*
+       * 改变指定 .item 所在的 .column
+       */
+      var itemTag = this.chooseItem;
+      var itemCol = parseInt(e.target.value);
+      var L = this.itemsObj.length;
+
+      if (-1 == itemTag) {
+        for(var i=0; i<L; i++) {
+          if(i != itemCol) {
+            for(var j=0; j<this.itemsObj[i]['items'].length; j++) {
+              var tmp = this.itemsObj[i]['items'][j];
+              this.itemsObj[itemCol]['items'].push(tmp);
+            }
+          }
+        }
+
+        for(var i=0; i<L; i++) {
+          if(i != itemCol) {
+            this.itemsObj[i]['items'].splice(0);
+          }
+        }
+
+      } else {
+        var pos = this.getItemXYFromTag(itemTag);
+        var tmp = this.itemsObj[pos.X]['items'][pos.Y];
+        
+        this.itemsObj[itemCol]['items'].push(tmp);
+        this.itemsObj[pos.X]['items'].splice(pos.Y, 1);
       }
     }
   },
