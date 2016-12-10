@@ -36,7 +36,7 @@ Data['boxStyle']   = {
   'flex-wrap': 'nowrap',
   'flex-flow': '',
   'justify-content': 'flex-start',
-  'align-items': 'flex-start',
+  'align-items': 'stretch',
   'align-content': 'stretch',
   'width': '204px',
   'height': '204px'
@@ -48,7 +48,7 @@ Data['columnStyle']= {
   'flex-wrap': 'nowrap',
   'flex-flow': '',
   'justify-content': 'flex-start',
-  'align-items': 'flex-start',
+  'align-items': 'stretch',
   'align-content': 'stretch'
 };
 
@@ -75,11 +75,11 @@ Data['itemsObj'] = [
     },
     'items': [
       {
-        'tag': 'A1',
+        'tag': '1',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       },
       {
-        'tag': 'A2',
+        'tag': '2',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
@@ -96,7 +96,7 @@ Data['itemsObj'] = [
     },
     'items': [
       {
-        'tag': 'A3',
+        'tag': '3',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
@@ -113,11 +113,11 @@ Data['itemsObj'] = [
     },
     'items': [
       {
-        'tag': 'A4',
+        'tag': '4',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       },
       {
-        'tag': 'A5',
+        'tag': '5',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       }
     ]
@@ -169,11 +169,14 @@ var LearnFlex = new Vue({
       }
 
       if(val < oldVal) {
-        console.log('Sub.');
         var L = this.itemsObj.length;
-      
-        this.itemsObj[L-1]['items'].pop();
-        console.log(this.itemsObj[L-1]['items'].length);
+        var l = L;
+
+        while(!this.itemsObj[l-1]['items'].length) { 
+          l--;
+        }
+        this.itemsObj[l-1]['items'].pop();
+
         if (!this.itemsObj[L-1]['items'].length) {
           this.itemsObj.pop();
         }
