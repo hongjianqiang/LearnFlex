@@ -48,6 +48,10 @@ main {
   border-radius: 10%;
 }
 
+.column {
+  background-color: rgba(0,152,50,0.7);
+}
+
 .item {
   display: block;
   width: 24px;

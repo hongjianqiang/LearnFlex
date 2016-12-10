@@ -6,7 +6,7 @@
 'use strict';
 
 var Data = {
-  itemsNum: 5,
+  itemsNum: 6,
   chooseColumn: -1,
   chooseItem: -1
 };
