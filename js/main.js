@@ -38,8 +38,8 @@ Data['boxStyle']   = {
   'justify-content': 'flex-start',
   'align-items': 'stretch',
   'align-content': 'stretch',
-  'width': '204px',
-  'height': '204px'
+  'width': '304px',
+  'height': '304px'
 };
 
 Data['columnStyle']= {
@@ -81,7 +81,7 @@ Data['itemsObj'] = [
       {
         'tag': '2',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
-      }
+      },
     ]
   },
   {
@@ -98,7 +98,11 @@ Data['itemsObj'] = [
       {
         'tag': '3',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
-      }
+      },
+      {
+        'tag': '4',
+        'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
+      },
     ]
   },
   {
@@ -113,13 +117,13 @@ Data['itemsObj'] = [
     },
     'items': [
       {
-        'tag': '4',
+        'tag': '5',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
       },
       {
-        'tag': '5',
+        'tag': '6',
         'style': {'order': 0, 'flex-grow': 0, 'flex-shrink': 1, 'flex-basis': 'auto', 'flex': '', 'align-self': 'auto'}
-      }
+      },
     ]
   },
 ];
